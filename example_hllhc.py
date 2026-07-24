@@ -412,9 +412,9 @@ fig.savefig(output_dir / "3.png")
 
 # transverse (horizontal + vertical) luminous region, same idea as the
 # longitudinal one above but scanning the collision offset in x/y instead of z
-results, res_density_trans, res_pu_density_trans = useful_tools.cmp_transverse_luminous_region(results, myLumiModel, direction="both", verbose=False)
-fig, ax = useful_tools.plot_transverse_luminous_region(results, myLumiModel, direction="both")
-fig.savefig(output_dir / "3b.png")
+#results, res_density_trans, res_pu_density_trans = useful_tools.cmp_transverse_luminous_region(results, myLumiModel, direction="both", verbose=False)
+#fig, ax = useful_tools.plot_transverse_luminous_region(results, myLumiModel, direction="both")
+#fig.savefig(output_dir / "3b.png")
 
 if myLumiModel.include_lhcb:
   fig, ax = useful_tools.plot_ip8(results, myLumiModel, level_time_ip15=level_time_ATLAS, opt_fill_length=opt_fill_length, emit_0=2.0)
@@ -423,8 +423,8 @@ if myLumiModel.include_lhcb:
   fig.savefig(output_dir / "4.png")
   fig, ax = useful_tools.plot_ip8_longitudinal_luminous_region(results, opt_fill_length=opt_fill_length)
   fig.savefig(output_dir / "5.png")
-  fig, ax = useful_tools.plot_ip8_transverse_luminous_region(results, opt_fill_length=opt_fill_length, direction="both")
-  fig.savefig(output_dir / "5b.png")
+  #fig, ax = useful_tools.plot_ip8_transverse_luminous_region(results, opt_fill_length=opt_fill_length, direction="both")
+  #fig.savefig(output_dir / "5b.png")
 
 # %%
 results.to_parquet(output_dir / "results.parquet")
