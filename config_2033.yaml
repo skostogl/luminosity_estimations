@@ -1,0 +1,119 @@
+verbose: true
+energy_GeV: 7000.0
+VRF_MV: 16.0
+
+bunch_length:
+  level_bl_at_s: 1.0153691057831748e-09
+  level_bl_to_s: 1.0153691057831748e-09
+
+IBS_SR:
+  load_lookup_table: true
+  lookup_table_path:
+    0.5: lookup_tables/lookup_table_XIBS_HL_scan_7TeV_16MV_50cm
+    0.15: lookup_tables/lookup_table_XIBS_HL_scan_7TeV_16MV_15cm
+  flag_lookup_from_XIBS: true
+  tauSRxy_hours:      # if none, will use hard-coded values depending on energy
+  tauSRl_hours:
+  # computing SR and IBS from collider
+  flag_SR_collider: false
+  flag_IBS_collider_with_xibs: false # if True, run XIBS (no lookup table) with collider specified in collider_path
+  collider_json:      #"collider/collider.json"
+
+extra_emit_growth:
+  ex_extra: 0.0 # um/h
+  ey_extra: 0.04 # um/h
+  use_emittance_data_x: false
+  use_emittance_data_y: true
+
+ATLAS_CMS:
+  optics_year: HLLHC   # 2022, 2023, HLLHC, this is for the optics matching steps, check self.df_optics
+  beta_min: 0.2  # if null it will take the df_optics, if value specified it will force minimum beta to that value
+  betaratio: 1
+  flag_xing_ct: true # if True, keep xing constant to xing_ref otherwise follow BBLR limit as in 2023
+  xing_ref: 215.0
+  ATLAS_crossing: H
+  CMS_crossing: V
+  level_on_ATLAS_or_CMS: CMS
+  flag_lumi_simple: false # if True, use simple gaussian formula. If False, use integrals
+  level_lumi_ip1: 1e+39   # this will be readjusted: leveling on the minimum between lumi and pileup
+  max_pileup_ip1: 150.0
+  level_lumi_ip5: 1e+39
+  max_pileup_ip5: 150.0
+  lumi_tol_percentage: 2.0 # tolerance for leveling
+  level_virtual_lumi:
+  level_virtual_pu:
+  virtual_lumi_emit: 1.8e-6
+  virtual_lumi_tol_percentage:  # tolerance for leveling of virtual lumi 
+
+LHCb:
+  include_lhcb: true
+  xing_ip8_x: 135.0
+  xing_ip8_y: 170.0
+  betax_ip8: 1.5
+  betay_ip8: 1.5
+  level_lumi_ip8: 2.0e+37
+  max_pileup_ip8: 28.0  # it will take the minimum between level_lumi and max_pileup
+  lumi_tol_percentage_ip8: 0
+
+
+cross_sections:
+  sigma_el_m2: 2.97e-30
+  sigmaBOff_m2: 8.1e-30
+  sigmaBOff_losses: 1.1000000000000001e-29
+
+filling_scheme:
+  compute_filling_scheme: false
+  number_of_bunches: 2748
+  number_of_bunches_coll_ip15:
+  number_of_bunches_coll_ip8: 2574
+  number_of_bunches_noncoll_ip15_b1:
+  number_of_bunches_noncoll_ip15_b2:
+  number_of_bunches_noncoll_ip8_b1:
+  number_of_bunches_noncoll_ip8_b2:
+  idx_b1: # filled slots
+  - 0
+  idx_b2:
+  - 0
+  idx_b1_coll_ip15:
+  idx_b2_coll_ip15:
+  idx_b1_noncoll_ip15:
+  idx_b2_noncoll_ip15:
+  idx_b1_coll_ip8:
+  - 0
+  idx_b2_coll_ip8:
+  - 0
+  idx_b1_noncoll_ip8:
+  idx_b2_noncoll_ip8:
+
+coupling:
+  coupling_coeff: 0.0015
+  delta_tunesplit: 0.01
+
+crab_cavities:
+  include_cc: true
+  ccx_ip1: -0.00019 #-190.0e-6 # maximum, CC ramp is treated inside the main code
+  ccy_ip1: 0
+  ccx_ip5: 0
+  ccy_ip5: -0.00019 #-190.0e-6
+  ex_extra_CC: 0.115
+  ey_extra_CC: 0.115
+  VCC_MV: 6.8 # MV
+
+simulation_parameters:
+  normalized_emittance: 2.5
+  intensity: 220000000000.00003
+  bunch_length_s: 1.0153691057831748e-09
+  time_step_minutes: 5
+  time_periods: 180
+
+performance:
+  op_days: 139.0
+  efficiency: 0.5
+  turnaround_time_h: 2.5
+
+longitudinal_pdf:
+  include_qGaussian_pdf: false
+  q_value: 1.0
+
+save_to: ./
+log_file: ./log.json
