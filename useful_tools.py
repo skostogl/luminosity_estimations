@@ -113,11 +113,14 @@ def plot_lumi_profiles(results, myLumiModel=None, config="config.yaml"):
     plt.sca(ax[1,0])
     plt.grid()
 
-    plt.plot(results['rel_time']/3600.0, results['emitx_B1'].apply(lambda x:np.mean(x))*1e6, c='c',  marker='o', ms=0, label=r'$\epsilon_{\rm n,x}$')
-    plt.plot(results['rel_time']/3600.0, results['emity_B1'].apply(lambda x:np.mean(x))*1e6, c='m',  marker='o', ms=0, label=r'$\epsilon_{\rm n,y}$')
+    plt.plot(results['rel_time']/3600.0, results['emitx_B1'].apply(lambda x:np.mean(x))*1e6, c='c',  marker='o', ms=0, label=r'$\epsilon_{\rm n,x}$ B1')
+    plt.plot(results['rel_time']/3600.0, results['emity_B1'].apply(lambda x:np.mean(x))*1e6, c='m',  marker='o', ms=0, label=r'$\epsilon_{\rm n,y}$ B1')
+    plt.plot(results['rel_time']/3600.0, results['emitx_B2'].apply(lambda x:np.mean(x))*1e6, c='c',  marker='o', ms=0, linestyle='--', lw=2.5, label=r'$\epsilon_{\rm n,x}$ B2')
+    plt.plot(results['rel_time']/3600.0, results['emity_B2'].apply(lambda x:np.mean(x))*1e6, c='m',  marker='o', ms=0, linestyle='--', lw=2.5, label=r'$\epsilon_{\rm n,y}$ B2')
     plt.ylabel(r'$\rm \epsilon_n \ (\mu m)$')
-    plt.legend(fontsize=15)
-    plt.ylim(1.3, 3.5)
+    plt.legend(fontsize=13, ncol=2)
+    _emax = max(results[k].apply(lambda x:np.mean(x)).max() for k in ['emitx_B1','emity_B1','emitx_B2','emity_B2'])*1e6
+    plt.ylim(1.3, max(3.5, _emax + 0.1))
 
 
     plt.sca(ax[1,1])
@@ -345,10 +348,10 @@ def cmp_longitudinal_luminous_region(results, myLumiModel, verbose=False, nb=Non
                     alpha_y1=0, alpha_y2=0, 
                     dx_1=0, dx_2=0, dy_1=0, dy_2=0, 
                     dpx_1=0, dpx_2=0, dpy_1=0, dpy_2=0, 
-                    CC_V_x_1=myV_x, CC_f_x_1=ccrf, CC_phase_x_1=0, 
-                    CC_V_x_2=-myV_x, CC_f_x_2=ccrf, CC_phase_x_2=0, 
-                    CC_V_y_1=myV_y, CC_f_y_1=ccrf, CC_phase_y_1=0, 
-                    CC_V_y_2=-myV_y, CC_f_y_2=ccrf, CC_phase_y_2=0, 
+                    CC_V_x_1=getattr(myLumiModel,'cc_b1_fraction',1.0)*myV_x, CC_f_x_1=ccrf, CC_phase_x_1=0, 
+                    CC_V_x_2=-getattr(myLumiModel,'cc_b2_fraction',1.0)*myV_x, CC_f_x_2=ccrf, CC_phase_x_2=0, 
+                    CC_V_y_1=getattr(myLumiModel,'cc_b1_fraction',1.0)*myV_y, CC_f_y_1=ccrf, CC_phase_y_1=0, 
+                    CC_V_y_2=-getattr(myLumiModel,'cc_b2_fraction',1.0)*myV_y, CC_f_y_2=ccrf, CC_phase_y_2=0, 
                     R12_1=myR12, R22_1=0, R34_1=myR34, R44_1=0, 
                     R12_2=myR12, R22_2=0, R34_2=myR34, R44_2=0, 
                     verbose=verbose, sigma_integration=3.0)
@@ -686,10 +689,10 @@ def cmp_transverse_luminous_region(results, myLumiModel, direction="both", verbo
                         alpha_y1=0, alpha_y2=0,
                         dx_1=0, dx_2=0, dy_1=0, dy_2=0,
                         dpx_1=0, dpx_2=0, dpy_1=0, dpy_2=0,
-                        CC_V_x_1=myV_x, CC_f_x_1=ccrf, CC_phase_x_1=0,
-                        CC_V_x_2=-myV_x, CC_f_x_2=ccrf, CC_phase_x_2=0,
-                        CC_V_y_1=myV_y, CC_f_y_1=ccrf, CC_phase_y_1=0,
-                        CC_V_y_2=-myV_y, CC_f_y_2=ccrf, CC_phase_y_2=0,
+                        CC_V_x_1=getattr(myLumiModel,'cc_b1_fraction',1.0)*myV_x, CC_f_x_1=ccrf, CC_phase_x_1=0,
+                        CC_V_x_2=-getattr(myLumiModel,'cc_b2_fraction',1.0)*myV_x, CC_f_x_2=ccrf, CC_phase_x_2=0,
+                        CC_V_y_1=getattr(myLumiModel,'cc_b1_fraction',1.0)*myV_y, CC_f_y_1=ccrf, CC_phase_y_1=0,
+                        CC_V_y_2=-getattr(myLumiModel,'cc_b2_fraction',1.0)*myV_y, CC_f_y_2=ccrf, CC_phase_y_2=0,
                         R12_1=myR12, R22_1=0, R34_1=myR34, R44_1=0,
                         R12_2=myR12, R22_2=0, R34_2=myR34, R44_2=0,
                         verbose=verbose, sigma_integration=3.0)
@@ -858,10 +861,10 @@ def cmp_pileup_density(results, myLumiModel, verbose=False, nb=None,
                     alpha_y1=0, alpha_y2=0, 
                     dx_1=0, dx_2=0, dy_1=0, dy_2=0, 
                     dpx_1=0, dpx_2=0, dpy_1=0, dpy_2=0, 
-                    CC_V_x_1=myV_x, CC_f_x_1=ccrf, CC_phase_x_1=0, 
-                    CC_V_x_2=-myV_x, CC_f_x_2=ccrf, CC_phase_x_2=0, 
-                    CC_V_y_1=myV_y, CC_f_y_1=ccrf, CC_phase_y_1=0, 
-                    CC_V_y_2=-myV_y, CC_f_y_2=ccrf, CC_phase_y_2=0, 
+                    CC_V_x_1=getattr(myLumiModel,'cc_b1_fraction',1.0)*myV_x, CC_f_x_1=ccrf, CC_phase_x_1=0, 
+                    CC_V_x_2=-getattr(myLumiModel,'cc_b2_fraction',1.0)*myV_x, CC_f_x_2=ccrf, CC_phase_x_2=0, 
+                    CC_V_y_1=getattr(myLumiModel,'cc_b1_fraction',1.0)*myV_y, CC_f_y_1=ccrf, CC_phase_y_1=0, 
+                    CC_V_y_2=-getattr(myLumiModel,'cc_b2_fraction',1.0)*myV_y, CC_f_y_2=ccrf, CC_phase_y_2=0, 
                     R12_1=myR12, R22_1=0, R34_1=myR34, R44_1=0, 
                     R12_2=myR12, R22_2=0, R34_2=myR34, R44_2=0, 
                     verbose=verbose, sigma_integration=3.0)

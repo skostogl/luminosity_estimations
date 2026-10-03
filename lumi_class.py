@@ -195,6 +195,10 @@ class LumiModel:
         else:
             self.ccx_ip1, self.ccy_ip1, self.ccx_ip5, self.ccy_ip5, self.VCC_MV, self.ex_extra_CC, self.ey_extra_CC = 0, 0, 0, 0, 0, 0, 0
 
+        # fraction of the crab angle applied to each beam (1 = full crabbing, 0 = no crabbing)
+        self.cc_b1_fraction     = float(config["crab_cavities"].get("cc_b1_fraction", 1.0))
+        self.cc_b2_fraction     = float(config["crab_cavities"].get("cc_b2_fraction", 1.0))
+
         if all([self.ccx_ip1 == 0, self.ccy_ip1 == 0, self.ccx_ip5 == 0, self.ccy_ip5 == 0]):
             self.include_cc = False
 
@@ -1094,10 +1098,10 @@ class LumiModel:
                                                     alpha_x1=0,alpha_x2=-0,alpha_y1=0,alpha_y2=-0,
                                                     dx_1=0,dx_2=0,dy_1=0,dy_2=0,
                                                     dpx_1=0,dpx_2=0,dpy_1=0,dpy_2=0,
-                                                    CC_V_x_1=ccvx,CC_f_x_1=ccrf,CC_phase_x_1=0,
-                                                    CC_V_x_2=-ccvx,CC_f_x_2=ccrf,CC_phase_x_2=0,
-                                                    CC_V_y_1=ccvy,CC_f_y_1=ccrf,CC_phase_y_1=0,
-                                                    CC_V_y_2=-ccvy,CC_f_y_2=ccrf,CC_phase_y_2=0,
+                                                    CC_V_x_1=self.cc_b1_fraction*ccvx,CC_f_x_1=ccrf,CC_phase_x_1=0,
+                                                    CC_V_x_2=-self.cc_b2_fraction*ccvx,CC_f_x_2=ccrf,CC_phase_x_2=0,
+                                                    CC_V_y_1=self.cc_b1_fraction*ccvy,CC_f_y_1=ccrf,CC_phase_y_1=0,
+                                                    CC_V_y_2=-self.cc_b2_fraction*ccvy,CC_f_y_2=ccrf,CC_phase_y_2=0,
                                                     R12_1=ccr12,R22_1=0,R34_1=ccr34,R44_1=0,R12_2=ccr12,R22_2=0,R34_2=ccr34,R44_2=0,
                                                     verbose=verbose,sigma_integration=3,
                                                     )
@@ -1116,10 +1120,10 @@ class LumiModel:
                                                     alpha_x1=0,alpha_x2=-0,alpha_y1=0,alpha_y2=-0,
                                                     dx_1=0,dx_2=0,dy_1=0,dy_2=0,
                                                     dpx_1=0,dpx_2=0,dpy_1=0,dpy_2=0,
-                                                    CC_V_x_1=ccvx,CC_f_x_1=ccrf,CC_phase_x_1=0,
-                                                    CC_V_x_2=-ccvx,CC_f_x_2=ccrf,CC_phase_x_2=0,
-                                                    CC_V_y_1=ccvy,CC_f_y_1=ccrf,CC_phase_y_1=0,
-                                                    CC_V_y_2=-ccvy,CC_f_y_2=ccrf,CC_phase_y_2=0,
+                                                    CC_V_x_1=self.cc_b1_fraction*ccvx,CC_f_x_1=ccrf,CC_phase_x_1=0,
+                                                    CC_V_x_2=-self.cc_b2_fraction*ccvx,CC_f_x_2=ccrf,CC_phase_x_2=0,
+                                                    CC_V_y_1=self.cc_b1_fraction*ccvy,CC_f_y_1=ccrf,CC_phase_y_1=0,
+                                                    CC_V_y_2=-self.cc_b2_fraction*ccvy,CC_f_y_2=ccrf,CC_phase_y_2=0,
                                                     R12_1=ccr12,R22_1=0,R34_1=ccr34,R44_1=0,R12_2=ccr12,R22_2=0,R34_2=ccr34,R44_2=0,
                                                     verbose=verbose,sigma_integration=3,
                                                     )
@@ -1576,14 +1580,16 @@ class LumiModel:
         egrx = egrx*factor
         egry = egry*factor
 
-        self.current_emitx_B1_uncoupled += egrx
-        self.current_emity_B1_uncoupled += egry
-        self.current_emitx_B2_uncoupled += egrx
-        self.current_emity_B2_uncoupled += egry
-        self.current_emitx_B1 += egrx
-        self.current_emity_B1 += egry
-        self.current_emitx_B2 += egrx
-        self.current_emity_B2 += egry
+        f1 = self.cc_b1_fraction**2
+        f2 = self.cc_b2_fraction**2
+        self.current_emitx_B1_uncoupled += f1*egrx
+        self.current_emity_B1_uncoupled += f1*egry
+        self.current_emitx_B2_uncoupled += f2*egrx
+        self.current_emity_B2_uncoupled += f2*egry
+        self.current_emitx_B1 += f1*egrx
+        self.current_emity_B1 += f1*egry
+        self.current_emitx_B2 += f2*egrx
+        self.current_emity_B2 += f2*egry
 
     
     ########################################################################################################

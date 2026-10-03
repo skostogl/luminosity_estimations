@@ -49,10 +49,10 @@ LHCb:
   include_lhcb: true
   xing_ip8_x: 135.0
   xing_ip8_y: 170.0
-  betax_ip8: 1.5
+  betax_ip8: 0.5
   betay_ip8: 1.5
-  level_lumi_ip8: 2.0e+37
-  max_pileup_ip8: 28.0  # it will take the minimum between level_lumi and max_pileup
+  level_lumi_ip8: 1.0e+38
+  max_pileup_ip8: 88.0  # it will take the minimum between level_lumi and max_pileup
   lumi_tol_percentage_ip8: 0
 
 
@@ -98,6 +98,8 @@ crab_cavities:
   ex_extra_CC: 0.115
   ey_extra_CC: 0.115
   VCC_MV: 6.8 # MV
+  cc_b1_fraction: 1.0 # fraction of crab angle on B1 (1 = full, 0 = no crabbing)
+  cc_b2_fraction: 1.0 # fraction of crab angle on B2
 
 simulation_parameters:
   normalized_emittance: 2.5

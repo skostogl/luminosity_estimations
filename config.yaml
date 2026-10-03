@@ -98,6 +98,8 @@ crab_cavities:
   ex_extra_CC: 0.0
   ey_extra_CC: 0.0
   VCC_MV: 6.8 # MV
+  cc_b1_fraction: 1.0 # fraction of crab angle on B1 (1 = full, 0 = no crabbing)
+  cc_b2_fraction: 1.0 # fraction of crab angle on B2
 
 simulation_parameters:
   normalized_emittance: 2.5
