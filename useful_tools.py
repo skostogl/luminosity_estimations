@@ -76,8 +76,6 @@ def plot_lumi_profiles(results, myLumiModel=None, config="config.yaml"):
     print('Opt int lumi [pb^-1]: %s'%opt_int_lumi)
     print('Yearly performance: %s fb-1/day, %s fb-1/year'%((lumi_int_m_day_taround[idx]*1e-43), (lumi_int_m_day_taround[idx]*1e-43)*op_days*efficiency))
 
-    lumi_avg_xing = 1.0/(opt_int_lumi*1e40) * cumtrapz(np.array(results['lumi_avg'][0:idx])*np.array(results['xing'][0:idx])*2.0*1e-6, x=results['time'][0:idx])
-
     results['lumi_year'] = (lumi_int_m_day_taround[idx]*1e-43)*op_days*efficiency
     results['lumi_day']  = (lumi_int_m_day_taround[idx]*1e-43)
     if myLumiModel.include_lhcb:
@@ -105,7 +103,7 @@ def plot_lumi_profiles(results, myLumiModel=None, config="config.yaml"):
     plt.sca(ax[0,1])
     plt.grid()
 
-    plt.plot(results['rel_time']/3600.0, results['inten_B1']/1e11, c='b',  marker='o', ms=0)
+    plt.plot(results['rel_time']/3600.0, results['inten_B1'].map(np.mean)/1e11, c='b',  marker='o', ms=0)
     plt.ylabel(r'Intensity $\rm (\times 10^{11} \ ppb)$')
     plt.axhline(2.2,linestyle='--', c='dimgray', lw=2)
 
@@ -151,8 +149,8 @@ def plot_lumi_profiles(results, myLumiModel=None, config="config.yaml"):
 
 
     ax2=ax[2,1].twinx()
-    plt.plot(results['rel_time']/3600.0, np.array(results['pu_ATLAS']), c='b',  marker='o', ms=0, linestyle='-.', lw=1)
-    plt.plot(results['rel_time']/3600.0, np.array(results['pu_CMS']), c='r',  marker='o', ms=0, linestyle='--', lw=1)
+    plt.plot(results['rel_time']/3600.0, results['pu_ATLAS'].map(np.mean), c='b',  marker='o', ms=0, linestyle='-.', lw=1)
+    plt.plot(results['rel_time']/3600.0, results['pu_CMS'].map(np.mean), c='r',  marker='o', ms=0, linestyle='--', lw=1)
     plt.ylabel('Pileup (events)')
     ax2.yaxis.label.set_color('k')
     ax2.tick_params(axis='y', colors='k')
@@ -223,8 +221,8 @@ def plot_ip15_separation(results, myLumiModel, emit_0=2.5, flag_virtual=False):
 
     plt.sca(ax[0])
     plt.grid()
-    plt.plot(results['rel_time']/3600.0, results['lumi_ATLAS']/1e38, c='b', lw=2, label="ATLAS")
-    plt.plot(results['rel_time']/3600.0, results['lumi_CMS']/1e38, c='r', lw=2, label="CMS")
+    plt.plot(results['rel_time']/3600.0, results['lumi_ATLAS'].map(np.mean)/1e38, c='b', lw=2, label="ATLAS")
+    plt.plot(results['rel_time']/3600.0, results['lumi_CMS'].map(np.mean)/1e38, c='r', lw=2, label="CMS")
 
 
 
@@ -237,11 +235,11 @@ def plot_ip15_separation(results, myLumiModel, emit_0=2.5, flag_virtual=False):
         upper_bound = max_virtual 
         plt.axhspan(lower_bound/1e38, upper_bound/1e38, alpha=0.2, color='gray')
 
-        plt.plot(results['rel_time']/3600.0, results['virtual_lumi_ATLAS_2um']/1e38, c='lime', lw=1, label="Virtual ATLAS, 2um")
-        plt.plot(results['rel_time']/3600.0, results['virtual_lumi_CMS_2um']/1e38, c='orange', lw=2, label="Virtual CMS, 2um")
+        plt.plot(results['rel_time']/3600.0, results['virtual_lumi_ATLAS_2um'].map(np.mean)/1e38, c='lime', lw=1, label="Virtual ATLAS, 2um")
+        plt.plot(results['rel_time']/3600.0, results['virtual_lumi_CMS_2um'].map(np.mean)/1e38, c='orange', lw=2, label="Virtual CMS, 2um")
 
-        plt.plot(results['rel_time']/3600.0, results['virtual_lumi_ATLAS']/1e38, c='navy', lw=1, label="Virtual ATLAS")
-        plt.plot(results['rel_time']/3600.0, results['virtual_lumi_CMS']/1e38, c='firebrick', lw=2, label="Virtual CMS")
+        plt.plot(results['rel_time']/3600.0, results['virtual_lumi_ATLAS'].map(np.mean)/1e38, c='navy', lw=1, label="Virtual ATLAS")
+        plt.plot(results['rel_time']/3600.0, results['virtual_lumi_CMS'].map(np.mean)/1e38, c='firebrick', lw=2, label="Virtual CMS")
 
     max_virtual = myLumiModel.level_lumi_ip1
     tolerance = myLumiModel.lumi_tol_percentage/100.0
@@ -411,8 +409,8 @@ def plot_longitudinal_luminous_region(results, myLumiModel, emit_0=2.0):
 
     plt.sca(ax[0])
     plt.grid()
-    plt.plot(results['rel_time']/3600.0, results['lumi_ATLAS']/1e38, c='b', lw=2, label="ATLAS")
-    plt.plot(results['rel_time']/3600.0, results['lumi_CMS']/1e38, c='r', lw=2, label="CMS")
+    plt.plot(results['rel_time']/3600.0, results['lumi_ATLAS'].map(np.mean)/1e38, c='b', lw=2, label="ATLAS")
+    plt.plot(results['rel_time']/3600.0, results['lumi_CMS'].map(np.mean)/1e38, c='r', lw=2, label="CMS")
 
 
     plt.legend()
@@ -458,15 +456,16 @@ def plot_ip8(results, myLumiModel, level_time_ip15=0, opt_fill_length=0, emit_0=
 
     plt.sca(ax[0,0])
     plt.grid()
-    plt.plot(results["rel_time"].values/3600.0, results["pu_LHCB"])
+    pileup = results["pu_LHCB"].map(np.mean)
+    plt.plot(results["rel_time"].values/3600.0, pileup)
     plt.ylabel("LHCb pileup")
     ax2 = ax[0,0].twinx()
     plt.plot(results["rel_time"].values/3600.0, results["lumi_LHCB"].apply(lambda x:np.mean(x))/1e38, c='k', lw=0.1)
     plt.ylabel(r'$\mathcal{L}$ ' + r'$\rm (10^{34} \ Hz/cm^{2})$')
     plt.sca(ax[0,0])
 
-    current_pu = np.max(results['pu_LHCB'])
-    level_time_ip8 = results[np.isclose(results['pu_LHCB'].apply(lambda x:np.mean(x)), current_pu, rtol=1e-3)].iloc[-1]['rel_time']/3600.0
+    current_pu = pileup.max()
+    level_time_ip8 = results[np.isclose(pileup, current_pu, rtol=1e-3)].iloc[-1]['rel_time']/3600.0
     mytext = r'$\rm t_{level}^{IP8} = %s \ h$' %round(level_time_ip8, 3)
     plt.axvline(level_time_ip8, c="k", linestyle='--', lw=1, label=mytext)
 

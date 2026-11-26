@@ -592,7 +592,7 @@ class LumiModel:
                     self.df_init[var] = self.df_init.apply(get_avg, var=var, axis=1)
                 
 
-        self.dt_step = self.df_init.index.to_series().diff()[1].total_seconds()
+        self.dt_step = self.df_init.index.to_series().diff().iloc[1].total_seconds()
         
         self.df_init_b1 = self.df_init[self.df_init['beam']=='B1']
         self.df_init_b2 = self.df_init[self.df_init['beam']=='B2']
@@ -1005,8 +1005,10 @@ class LumiModel:
         self.ccvx = ccvx
         self.ccvy = ccvy
 
-        sigma_z1 = self.current_bl_s_B1/4.*clight
-        sigma_z2 = self.current_bl_s_B2/4.*clight
+        # The averaged beam state stores one value per array. Quadrature
+        # requires scalar bunch lengths and emittances for its integrand.
+        sigma_z1 = np.asarray(self.current_bl_s_B1).item() / 4 * clight
+        sigma_z2 = np.asarray(self.current_bl_s_B2).item() / 4 * clight
 
         if verbose:
             print("sigma_z1", sigma_z1)
@@ -1073,15 +1075,12 @@ class LumiModel:
             print("")
 
         if emit is None:
-            epsilon_x1=self.current_emitx_B1
-            epsilon_x2=self.current_emitx_B2
-            epsilon_y1=self.current_emity_B1
-            epsilon_y2=self.current_emity_B2
+            epsilon_x1 = np.asarray(self.current_emitx_B1).item()
+            epsilon_x2 = np.asarray(self.current_emitx_B2).item()
+            epsilon_y1 = np.asarray(self.current_emity_B1).item()
+            epsilon_y2 = np.asarray(self.current_emity_B2).item()
         else:
-            epsilon_x1=emit
-            epsilon_x2=emit
-            epsilon_y1=emit
-            epsilon_y2=emit
+            epsilon_x1 = epsilon_x2 = epsilon_y1 = epsilon_y2 = np.asarray(emit).item()
 
         if flag == "lumi":
 
