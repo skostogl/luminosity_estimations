@@ -753,12 +753,12 @@ def longitudinal_luminous_region(sigma_z_list,
     L = np.array(longitudinal_density)
     z= sigma_z_list
 
-    total_luminosity = np.trapz(L, z)
-    mean_z = np.trapz(z * L, z) / total_luminosity
+    total_luminosity = integrate.trapezoid(L, z)
+    mean_z = integrate.trapezoid(z * L, z) / total_luminosity
 
-    rms = np.sqrt(np.trapz(z**2 * L, z) / total_luminosity)
+    rms = np.sqrt(integrate.trapezoid(z**2 * L, z) / total_luminosity)
 
-    variance = np.trapz((z - mean_z)**2 * L, z) / total_luminosity
+    variance = integrate.trapezoid((z - mean_z)**2 * L, z) / total_luminosity
     std_dev = np.sqrt(variance)
 
     pileup_density = sigmaBOff_m2/f/nb * L
@@ -1066,12 +1066,12 @@ def transverse_luminous_region(pos_list, direction="x",
     L = np.array(transverse_density)
     pos = np.asarray(pos_list)
 
-    total_luminosity = np.trapz(L, pos)
-    mean_pos = np.trapz(pos * L, pos) / total_luminosity
+    total_luminosity = integrate.trapezoid(L, pos)
+    mean_pos = integrate.trapezoid(pos * L, pos) / total_luminosity
 
-    rms = np.sqrt(np.trapz(pos**2 * L, pos) / total_luminosity)
+    rms = np.sqrt(integrate.trapezoid(pos**2 * L, pos) / total_luminosity)
 
-    variance = np.trapz((pos - mean_pos)**2 * L, pos) / total_luminosity
+    variance = integrate.trapezoid((pos - mean_pos)**2 * L, pos) / total_luminosity
     std_dev = np.sqrt(variance)
 
     pileup_density = sigmaBOff_m2/f/nb * L
